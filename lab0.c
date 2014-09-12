@@ -71,10 +71,19 @@ _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & O
 int ledToToggle = 4;
 // ******************************************************************************************* //
 
+// added from power point
+typedef enum stateTypeEnum{WaitForPress, WaitForRelease, LEDToggle} stateType;
+// end added from power point
+
+
 int main(void)
 {
 	// Varaible for character recived by UART.
 	int receivedChar;
+
+        //added from power point
+        stateType state;  //
+        //end added from power point
 
 	//RPINR18 is a regsiter for selectable input mapping (see Table 10-2) for 
 	// for UART1. U1RX is 8 bit value used to specifiy connection to which
@@ -185,6 +194,31 @@ int main(void)
 		// whenever the SW1 is continuously pressed, the currently selected LED 
 		// will blink twice as fast. When SW1 is released the LEDs will blink at 
 		// the initially defined rate.
+
+            //added from power point
+            switch(state){
+                case WaitForPress:
+                    if(PORTBbits.RB5 == 0)
+                    {
+                        state = LEDToggle;
+                    }
+                    break;
+
+                case LEDToggle:
+                    LATB = LATB^0x8000;
+                    state = WaitForRelease;
+                    break;
+
+                case WaitForRelease:
+                    if(PORTBbits.RB5 == 1)
+                    {
+                        state = WaitForPress;
+                    }
+                    break;
+
+            //end added from power point
+
+            }
 
 
 		// Use the UART RX interrupt flag to wait until we recieve a character.
