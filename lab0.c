@@ -69,7 +69,6 @@ _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & O
 // This variable will be set by commands recieved from the UART.
 // By default we will toggle LED4. 
 int ledToToggle = 4;
-
 // ******************************************************************************************* //
 
 int main(void)
@@ -95,9 +94,9 @@ int main(void)
 	// TRISB controls direction for all PORTB pins, where 0 -> output, 1 -> input.
 	// Configure RB15, RB14, RB13, and RB12 as outputs.
 	TRISBbits.TRISB15 = 0;
-	TRISBbits.TRISB14 = 0;
-	TRISBbits.TRISB13 = 0;
-	TRISBbits.TRISB12 = 0;
+	TRISBbits.TRISB14 = 1;
+	TRISBbits.TRISB13 = 1;
+	TRISBbits.TRISB12 = 1;
 
 	// **TODO** SW1 of the 16-bit 28-pin Starter Board is connected to pin RB??. 
 	// Assign the TRISB bit for this pin to configure this port as an input.
@@ -172,7 +171,7 @@ int main(void)
 	//           c.) Entering the size of heap, e.g. 512, under Heap Size
 	//        2. printf function is advanced and using printf may require 
 	//           significant code size (6KB-10KB).   
-	printf("\n\n\rkonnichiwa-or-a-different-professor!\n\r");
+	printf("\n\n\rGreetings lowly Earth creature!\n\r");
 
 	// Print a message requesting the user to select a LED to toggle.
 	printf("Select LED to Toggle (4-7): ");
