@@ -201,6 +201,8 @@ int main(void)
                     if(PORTBbits.RB5 == 0)
                     {
                         state = LEDToggle;
+                        PR1 = 14400/2;
+                        TMR1 = 0;
                     }
                     break;
 
@@ -213,6 +215,8 @@ int main(void)
                     if(PORTBbits.RB5 == 1)
                     {
                         state = WaitForPress;
+                        PR1 = 14400;
+                        TMR1 = 0;
                     }
                     break;
 
