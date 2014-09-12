@@ -220,6 +220,9 @@ int main(void)
                     }
                     break;
 
+                default:
+                    break;
+
             //end added from power point
 
             }
