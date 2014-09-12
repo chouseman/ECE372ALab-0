@@ -72,7 +72,7 @@ int ledToToggle = 4;
 // ******************************************************************************************* //
 
 // added from power point
-typedef enum stateTypeEnum{WaitForPress, WaitForRelease, LEDToggle} stateType;
+typedef enum stateTypeEnum{WaitForPress, WaitForRelease, LEDToggle} stateType; //create a struct of type stateType to be used in switch statement
 // end added from power point
 
 
@@ -82,7 +82,7 @@ int main(void)
 	int receivedChar;
 
         //added from power point
-        stateType state;  //
+        stateType state;  //creates a state variable to be used in the switch statement
         //end added from power point
 
 	//RPINR18 is a regsiter for selectable input mapping (see Table 10-2) for 
@@ -102,14 +102,14 @@ int main(void)
 
 	// TRISB controls direction for all PORTB pins, where 0 -> output, 1 -> input.
 	// Configure RB15, RB14, RB13, and RB12 as outputs.
-	TRISBbits.TRISB15 = 0;
-	TRISBbits.TRISB14 = 1;
-	TRISBbits.TRISB13 = 1;
-	TRISBbits.TRISB12 = 1;
+	TRISBbits.TRISB15 = 0; // sets LED4 to on (output)
+	TRISBbits.TRISB14 = 1; // sets LED5 to off (input)
+	TRISBbits.TRISB13 = 1; // sets LED6 to off (input)
+	TRISBbits.TRISB12 = 1; // sets LED7 to off (input)
 
 	// **TODO** SW1 of the 16-bit 28-pin Starter Board is connected to pin RB??   5.
 	// Assign the TRISB bit for this pin to configure this port as an input.
-        TRISBbits.TRISB5 = 1;
+        TRISBbits.TRISB5 = 1; //sets SW1 as input
         
 
 	// Clear Timer value (i.e. current tiemr value) to 0
@@ -198,11 +198,11 @@ int main(void)
             //added from power point
             switch(state){
                 case WaitForPress:
-                    if(PORTBbits.RB5 == 0)
+                    if(PORTBbits.RB5 == 0) // when SW1 is pressed
                     {
                         state = LEDToggle;
-                        PR1 = 14400/2;
-                        TMR1 = 0;
+                        PR1 = 14400/2; //doubled the blinking rate of the active LED
+                        TMR1 = 0; // resets the TMR1 register to 0, if this is not done then I noticed a delay while pressing SW1 before the LED changed blinking speed
                     }
                     break;
 
@@ -212,11 +212,11 @@ int main(void)
                     break;
 
                 case WaitForRelease:
-                    if(PORTBbits.RB5 == 1)
+                    if(PORTBbits.RB5 == 1) //when SW1 is not pressed
                     {
                         state = WaitForPress;
-                        PR1 = 14400;
-                        TMR1 = 0;
+                        PR1 = 14400; // reset the blinking rate of the active LED
+                        TMR1 = 0; // resets the TMR1 register to 0
                     }
                     break;
 
