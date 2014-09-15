@@ -1,5 +1,5 @@
 // ******************************************************************************************* //
-//
+//  Revised by : Chris Houseman 23094147
 // File:         lab0.c   
 // Date:         08-20-2010
 // Authors:      Roman Lysecky 
@@ -35,7 +35,7 @@
 // program the PIC for standalone operation, change the COE_ON option to COE_OFF.
 
 _CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF & 	
-          BKBUG_ON & COE_ON & ICS_PGx1 & 
+          BKBUG_ON & COE_ON & ICS_PGx1 &
           FWDTEN_OFF & WINDIS_OFF & FWPSA_PR128 & WDTPS_PS32768 )
 
 
@@ -98,14 +98,14 @@ int main(void)
 	// Use LATB to write value to PORTB. This enables a Read-Modify-Write 
 	// behavior used in the interrupt later. Set the current output to
 	// 0 .
-	LATB = 0;
+	LATB = 0xFFFF;
 
 	// TRISB controls direction for all PORTB pins, where 0 -> output, 1 -> input.
 	// Configure RB15, RB14, RB13, and RB12 as outputs.
 	TRISBbits.TRISB15 = 0; // sets LED4 to on (output)
-	TRISBbits.TRISB14 = 1; // sets LED5 to off (input)
-	TRISBbits.TRISB13 = 1; // sets LED6 to off (input)
-	TRISBbits.TRISB12 = 1; // sets LED7 to off (input)
+	TRISBbits.TRISB14 = 0; // sets LED5 to off (input)
+	TRISBbits.TRISB13 = 0; // sets LED6 to off (input)
+	TRISBbits.TRISB12 = 0; // sets LED7 to off (input)
 
 	// **TODO** SW1 of the 16-bit 28-pin Starter Board is connected to pin RB??   5.
 	// Assign the TRISB bit for this pin to configure this port as an input.
@@ -196,19 +196,20 @@ int main(void)
 		// the initially defined rate.
 
             //added from power point
-            switch(state){
+            switch(state){ //state machine to switch between flashing speed
                 case WaitForPress:
                     if(PORTBbits.RB5 == 0) // when SW1 is pressed
                     {
                         state = LEDToggle;
                         PR1 = 14400/2; //doubled the blinking rate of the active LED
-                        TMR1 = 0; // resets the TMR1 register to 0, if this is not done then I noticed a delay while pressing SW1 before the LED changed blinking speed
+                        TMR1 = 0; // resets the TMR1 register to 0, EXTRA CREDIT: if this is not done then I noticed a delay while pressing SW1 before the LED changed blinking speed
                     }
                     break;
 
                 case LEDToggle:
                     LATB = LATB^0x8000;
                     state = WaitForRelease;
+                    LATBbits.LATB15 = 1; // Turns off LED4 when switching states
                     break;
 
                 case WaitForRelease:
@@ -230,7 +231,7 @@ int main(void)
 
 		// Use the UART RX interrupt flag to wait until we recieve a character.
 		if(IFS0bits.U1RXIF == 1) {	
-
+                    LATB = 0xFFFF;
 			// U1RXREG stores the last character received by the UART. Read this 
 			// value into a local variable before processing.
 			receivedChar = U1RXREG;
